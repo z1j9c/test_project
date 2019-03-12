@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<style type="text/css">
+		 *{
+		 	margin:0;padding: 0;
+		 }
+		 .td_btn{
+           font-size: 16px;
+           letter-spacing: 3px;
+           margin: 0 5px;
+		 }
+		</style>
+	</head>
+
+	<body>
+        <div>
+        <center>商品录入</center>
+        <div>
+            <label>输入商品编号</label>
+            <input type="text" id="shop_number"/>
+        </div>
+	    <div>
+	    	<label>输入商品名</label>
+	    	<input type="text" id="shop_name"/>
+	    </div>
+	    <div>
+	    	<label>输入商品原价</label>
+	    	<input type="number" id="shop_price" />
+	    </div>
+	    <div>
+	    	<label>输入商品库存</label>
+	    	<input type="number" id="shop_kc" />
+	    </div>
+	    <button onclick="shopInforSubmit()">提交商品信息</button>
+	  </div>
+      <div>
+        <table>
+           <thead>
+              <tr align="center">
+                <th>商品编号</th>
+                <th>商品名</th>
+                <th>商品原价</th>
+                <th>商品库存</th>
+                <th>编辑</th>
+              </tr>
+           </thead>
+           <tbody id="shop_table">
+
+           </tbody>
+        </table>
+      </div>
+
+	  <div class="tree_menu">
+
+	  </div>
+
+	</body>
+<script type="text/javascript">
+	var customMenu=(function(option){
+	   function Menu(option){
+
+	   }
+       Menu.prototype.getElement=function(eleName){
+
+	   };
+	   return Menu;
+	})();
+
+</script>
+<script type="text/javascript">
+  var myDb={
+    name:'db_obj',
+    version:'1.01',
+    db:null,
+    ojsStore:{
+        name:'tab_one', //存储空间表的名字
+        keypath:'id' //主键
+    }
+  };
+  var INDEXDB={
+    indexedDB:window.indexedDB||window.webkitIndexedDB,
+    IDBKeyRange:window.IDBKeyRange||window.webkitIDBKeyRange, //键范围
+    openDB:function(dbName,dbVersion,callback){
+     //建立或打开数据库，建立对象存储空间(ObjectStore)
+     var self=this;
+     var version=dbVersion||1.00;
+     var request=self.indexedDB.open(dbName,version);
+     request.onerror=function(e){
+        if(typeof callback=="function"){
+          callback();
+        }
+        console.log("打开数据失败："+e.currentTarget.error.message);
+     };
+     request.onsuccess=function(e){
+        myDb.db=e.target.result;
+        if(typeof callback=="function"){
+          callback(myDb.db);
+        }
+        console.log("成功打开数据库："+myDb.name+"version"+dbVersion);
+     };
+     request.onupgradeneeded=function(e){
+        var db=e.target.result,transaction=e.target.transaction,store;
+        if(!db.objectStoreNames.contains(myDb.ojsStore.name)){
+          //没有该对象存储空间
+          store=db.createObjectStore(myDb.ojsStore.name,{
+            keyPath:myDb.ojsStore.keypath
+          });
+          console.log('成功建立对象存储空间：'+myDb.ojsStore.name);
+        }
+      }
+    },
+    deleteDb:function(dbName){
+      //删除数据库
+      var self=this;
+      self.indexedDB.deleteDatabase(dbName);
+      console.log(dbName+'数据库已删除');
+    },
+    closeDb:function(db){
+      //关闭数据库
+      db.close();
+      console.log('数据库已关闭');
+    },
+    addData:function(db,storename,data,success,error){
+     //添加数据，重复添加会报错
+     var store=db.transaction(storename,'readwrite').objectStore(storename),request;
+     for(var i=0;i<data.length;i++){
+       request=store.add(data[i]);
+       request.onerror=function(){
+        if(typeof error=="function"){
+           error();
+        };
+        console.log("数据库中已有该数据");
+       };
+       request.onsuccess=function(){
+        if(typeof success=="function"){
+           success();
+        };
+        console.log("添加数据成功");
+       }
+     }
+    },
+    putData:function(db,storename,data,success,error){
+        //添加数据，重复添加会更新原有数据
+        var store=db.transaction(storename,'readwrite').objectStore(storename),request;
+        for(var i=0;i<data.length;i++){
+           request=store.put(data[i]);
+           request.onerror=function(){
+            if(typeof error=="function"){
+              error();
+            };
+            console.log("数据库中已有该数据");
+           };
+           request.onsuccess=function(){
+            if(typeof success=="function"){
+              success();
+            };
+            console.log("添加数据已存入数据库");
+           }
+        }
+    },
+    getDataByKey:function(db,storename,key,success,error){
+      //根据存储空间的键找到对应数据
+      var store=db.transaction(storename,'readwrite').objectStore(storename);
+      var request=store.get(key);
+      request.onerror=function(){
+        if(typeof error=="function"){
+            error();
+        };
+        console.log("getDataByKey 错误");
+      };
+      request.onsuccess=function(e){
+        var result=e.target.result;
+        if(typeof success=="function"){
+            success(result);
+         };
+        console.log("查询数据成功"+result);
+      }
+    },
+    getAllData:function(db,storename,success,error){
+      var store=db.transaction(storename,'readwrite').objectStore(storename);
+      var request=store.openCursor(),data=[];
+      request.onerror=function(){
+        if(typeof error=="function"){
+            error();
+        };
+        console.log("getAllData 错误");
+      };
+      request.onsuccess=function(e){
+        var result=e.target.result;
+        if(typeof success=="function"){
+            if(result&&result!=null){
+             data.push(result.value);
+             result.continue();
+            }else{
+             success(data);
+            }
+         };
+        console.log("查询数据成功"+result);
+      }
+    },
+    deleteData:function(db,storename,key,callback){
+     //删除某项记录
+     var store=db.transaction(storename,'readwrite').objectStore(storename);
+     store.delete(key);
+     if(typeof callback=="function"){
+       callback();
+     }
+     console.log('已删除存储空间'+storename+'中的'+key+'记录');
+    },
+    clearAllData:function(db,storename){
+     //删除存储空间全部记录
+     var store=db.transaction(storename,'readwrite').objectStore(storename);
+     store.clear();
+     console.log("已删除存储空间"+storename+"全部记录");
+    }
+  }
+</script>
+<script type="text/javascript">
+	INDEXDB.openDB(myDb.name,myDb.version,function(){
+      INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+           showAllDataToPage(res,true);
+       },function(){
+
+      });
+    });
+
+    //商品信息提交
+    function shopInforSubmit(){
+      //商品编号
+      var shop_number=document.getElementById("shop_number").value;
+      //商品名
+      var shop_name=document.getElementById("shop_name").value;
+      //商品价格
+      var shop_price=document.getElementById("shop_price").value;
+      //商品库存
+      var shop_kc=document.getElementById("shop_kc").value;
+      if(shop_number==""){
+       alert("请填写商品编号");
+       return false;
+      }
+      if(shop_name==""){
+       alert("请填写商品名称");
+       return false;
+      }
+      if(shop_price==""){
+       alert("请填写商品价格");
+       return false;
+      }
+      if(shop_kc==""){
+       alert("请填写商品库存");
+       return false;
+      }
+      INDEXDB.addData(myDb.db,myDb.ojsStore.name,[{
+        'id':shop_number,
+        'shop_name':shop_name,
+        'shop_price':shop_price,
+        'shop_kc':shop_kc,
+        'shop_status':0
+      }],function(){
+        //成功
+        INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+           showAllDataToPage(res);
+        },function(){
+
+        });
+      },function(){
+        //失败
+
+      });
+    }
+
+
+    //显示所有数据到页面
+    function showAllDataToPage(data){
+    	console.log(data);
+    	var temp=[];
+     if(data.length!=0){
+        for(var i=0;i<data.length;i++){
+          temp.push('<tr align="center">');
+          temp.push('<td>');
+          temp.push('<span>'+data[i].id+'</span>');
+          temp.push('</td>');
+          temp.push('<td>');
+          temp.push((data[i].shop_status==0)?('<span>'+data[i].shop_name+'</span>'):('<input type="text" value='+data[i].shop_name+' />'));
+          temp.push('</td>');
+          temp.push('<td>');
+          temp.push((data[i].shop_status==0)?('<span>'+data[i].shop_price+'</span>'):('<input type="text" value='+data[i].shop_price+' />'));
+          temp.push('</td>');
+          temp.push('<td>');
+          temp.push((data[i].shop_status==0)?('<span>'+data[i].shop_kc+'</span>'):('<input type="text" value='+data[i].shop_kc+' />'));
+          temp.push('</td>');
+          temp.push('<td>');
+          temp.push('<button onclick="deleteTemp(this)" class="td_btn">删除</button>');
+          temp.push((data[i].shop_status==0)?('<button onclick="updateTemp(this)" class="td_btn">修改</button>'):('<button onclick="saveTemp(this)" class="td_btn">保存</button>'));
+          temp.push('</td>');
+          temp.push('</tr>');
+        }
+      }else{
+      	 temp.push('<tr align="center">');
+      	 temp.push('<td colspan="5">暂无数据</td>');
+      	 temp.push('</tr>');
+      }
+
+
+      document.getElementById("shop_table").innerHTML=temp.join("");
+    }
+    //删除此条商品
+    function deleteTemp(ts){
+     if(window.confirm('你确定要删除'+(siblings(ts.parentNode,true)[1]).getElementsByTagName("span")[0].innerHTML+'商品吗？')){
+       INDEXDB.deleteData(myDb.db,myDb.ojsStore.name,(siblings(ts.parentNode,true)[0]).getElementsByTagName("span")[0].innerHTML,function(){
+     	//成功
+        INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+           showAllDataToPage(res);
+        },function(){
+
+        });
+      });
+     }else{
+     	//成功
+        INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+           showAllDataToPage(res);
+        },function(){
+
+        });
+     }
+    }
+    //编辑
+    function updateTemp(ts){
+       var id=(siblings(ts.parentNode,true)[0]).getElementsByTagName("span")[0].innerHTML;
+        //成功
+        INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+
+           for(var i=0;i<res.length;i++){
+             if(id==res[i].id){
+               res[i].shop_status=1;
+             }
+           }
+           showAllDataToPage(res);
+        },function(){
+
+        });
+    }
+    //保存本行
+    function saveTemp(ts){
+      //修改
+      INDEXDB.putData(myDb.db,myDb.ojsStore.name,[{
+        'id':(siblings(ts.parentNode,true)[0]).getElementsByTagName("span")[0].innerHTML,
+        'shop_name':(siblings(ts.parentNode,true)[1]).getElementsByTagName("input")[0].value,
+        'shop_price':(siblings(ts.parentNode,true)[2]).getElementsByTagName("input")[0].value,
+        'shop_kc':(siblings(ts.parentNode,true)[3]).getElementsByTagName("input")[0].value,
+        'shop_status':0
+      }],function(){
+        //成功
+        INDEXDB.getAllData(myDb.db,myDb.ojsStore.name,function(res){
+           showAllDataToPage(res);
+        },function(){
+
+        });
+      },function(){
+        //失败
+
+      });
+    }
+
+    /*
+     * flag true 不包括自己
+     * flag false 包括自己
+     */
+    function siblings(elm,flag) {
+     var a = [];
+     var p = elm.parentNode.children;
+     for(var i =0,pl= p.length;i<pl;i++) {
+      if(flag){
+      	if(p[i] !== elm){
+          a.push(p[i]);
+        }
+       }else{
+         a.push(p[i]);
+       }
+     }
+     return a;
+    }
+</script>
+</html>
