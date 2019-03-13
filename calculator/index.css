@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+*{margin:0;padding:0;}
+
+.cal_warp{
+  margin: 0 auto;
+  width:400px;height:500px;
+  border:1px solid #a9a9a9;
+  background-color:#f8f8f8;
+}
+
+.cal_head{
+  width:100%;height:5%;
+}
+
+.cal_result_show{
+ width:96%;height:8%;
+ margin: 0 2% 1% 2%;
+
+}
+
+.result_box{
+  text-align: right;
+  width: 100%;height:100%;
+  border:0;outline:none;
+  font-size: 20px;
+  font-family: "Microsoft YaHei UI";
+}
+
+.cal_edit_box{
+ width:96%;height:75%;
+ margin: 0 2% 1% 2%;
+}
+
+.cal_edit_but{
+ width:100%;height:100%;
+}
+
+.but_css{
+  float: left;
+  width: 5%;height: 5%;
+  text-align: center;
+  line-height:100%;
+  padding:7% 8% 7% 8%;
+  margin:1.3% 1.74% 1.3% 1.74%;
+  border:1px solid #a9a9a9;
+  background-color: #ffffff;
+  cursor: pointer;
+}

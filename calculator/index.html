@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计算</title>
+    <link rel="stylesheet" type="text/css" href="index.css" >
+</head>
+<body>
+
+ <div class="cal_warp">
+     <div class="cal_head">
+
+     </div>
+     <div class="cal_result_show">
+      <input type="text" class="result_box" id="result_num" readonly="readonly">
+     </div>
+     <div class="cal_edit_box">
+        <div class="cal_edit_but">
+           <div class="but_css" onclick="strEventButCE('ce')">CE</div>
+           <div class="but_css" onclick="strEventButAC('ac')">AC</div>
+           <div class="but_css" onclick="strEventButDE('de')">DE</div>
+           <div class="but_css" onclick="strEventBut('+')">+</div>
+           <div class="but_css" onclick="numEventBut('7')">7</div>
+           <div class="but_css" onclick="numEventBut('8')">8</div>
+           <div class="but_css" onclick="numEventBut('9')">9</div>
+           <div class="but_css" onclick="strEventBut('-')">-</div>
+           <div class="but_css" onclick="numEventBut('4')">4</div>
+           <div class="but_css" onclick="numEventBut('5')">5</div>
+           <div class="but_css" onclick="numEventBut('6')">6</div>
+           <div class="but_css" onclick="strEventBut('×')">×</div>
+           <div class="but_css" onclick="numEventBut('1')">1</div>
+           <div class="but_css" onclick="numEventBut('2')">2</div>
+           <div class="but_css" onclick="numEventBut('3')">3</div>
+           <div class="but_css" onclick="strEventBut('÷')">÷</div>
+           <div class="but_css" onclick="numEventBut('0')">0</div>
+           <div class="but_css" onclick="strEventButBF('%')">%</div>
+           <div class="but_css" onclick="strEventButDian('.')">.</div>
+           <div class="but_css" onclick="strEventButDen('=')">=</div>
+        </div>
+     </div>
+ </div>
+
+<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
