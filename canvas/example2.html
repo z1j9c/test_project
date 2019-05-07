@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动画</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script type="text/javascript">
+       function clearClassElement(ele){
+         for(var i=ele.length-1;i>=0;i--){
+           ele[i].parentNode.removeChild(ele[i]);
+         }
+       };
+       function clearIdElement(ele){
+         var childs = ele.childNodes;
+         for(var i =childs.length-1;i>=0;i--){
+            ele.removeChild(childs[i]);
+         }
+       };
+       window.startAnimation=(function(){
+        return window.requestAnimationFrame ||
+               window.webkitRequestAnimationFrame ||
+               window.oRequestAnimationFrame||
+               window.msRequestAnimationFrame||
+               window.mozRequestAnimationFrame||
+               function(callback){
+                if(typeof callback == "function") {
+                    window.setTimeout(callback, 1000 / 60);
+                }
+               }
+       })();
+       window.stopAnimation=(function(){
+         return window.cancelAnimationFrame ||
+                window.webkitCancelAnimationFrame ||
+                window.oCancelAnimationFrame||
+                window.msCancelAnimationFrame||
+                window.mozRequestAnimationFrame||
+                function(callback){
+                 if(typeof callback == "function") {
+                     window.setTimeout(callback, 1000 / 60);
+                 }
+                }
+       })();
+    </script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script type="text/javascript">
+ var canvas = document.getElementById("canvas");
+ canvas.style.border="1px solid #000000";
+ var ctx = canvas.getContext("2d");
+ var val = 0;
+ function draw(){
+   var canArg={
+       width:canvas.width,
+       height:canvas.height,
+       orangeX:canvas.width/2,
+       orangeY:canvas.height/2,
+       pVal:(canvas.width/2+canvas.height/2)/3.1415926,
+       maxR:((canvas.width/2+canvas.height/2)/3.1415926)/2,
+       lineLength:8
+   };
+   ctx.clearRect(0,0,canArg.width,canArg.height);
+   ctx.translate(canArg.orangeX,canArg.orangeY);
+   //外大圆
+   //outsideCircle(canArg,ctx);
+   //八个方位的线
+   eightOrientation(canArg,ctx);
+   //外大圆里面的内嵌圆
+   outsideCircleInsideCircle(canArg,ctx);
+   //第一个内圆
+   firstInnerCircle(canArg,ctx);
+
+   //第一个内圆中的小圆
+   firstInnerCircleSmall(canArg,ctx);
+
+   //最后一个内圆
+   lastInnerCircle(canArg,ctx);
+   //最后一个内圆中的小圆
+   lastInnerCircleSmall(canArg,ctx);
+ }
+
+ //外大圆
+ function outsideCircle(arg,ctx){
+     //圆形中心坐标点
+     //ctx.translate(can.width/2,can.height/2);
+     ctx.beginPath();
+     ctx.lineWidth=1;
+     var yb=arg.pVal;
+     var x=arg.width/2;
+     var y=arg.height/2;
+     //绘制圆形
+     ctx.arc(x,y,yb,0,2*Math.PI);
+     //边框样式
+     ctx.strokeStyle='#ff0000';
+     //填充样式
+     ctx.fillStyle='#ffffff';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //外大圆里面的内嵌圆
+ function outsideCircleInsideCircle(arg,ctx){
+     ctx.save();
+     ctx.beginPath();
+     ctx.lineWidth=0;
+     var yb=arg.pVal/1.3;
+     var x=0;
+     var y=0;
+     //ctx.clearRect(x,y,arg.width,arg.height);
+     val+=Math.PI/360;
+     ctx.rotate(val);
+     //绘制圆形
+     //ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2,true);
+     ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2,true);
+     //边框样式
+     ctx.strokeStyle='#000000';
+     //填充样式
+     ctx.fillStyle='#000000';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //第一个内圆
+ function firstInnerCircle(arg,ctx){
+     ctx.beginPath();
+     ctx.lineWidth=0;
+     var nc=arg.pVal/1.3;
+     var yb=nc/2;
+     var x=0;
+     var y=-nc+yb;
+     //绘制圆形
+     ctx.arc(x,y,yb,Math.PI/2,Math.PI*3/2);
+     //边框样式
+     ctx.strokeStyle='#ffffff';
+     //填充样式
+     ctx.fillStyle='#ffffff';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //第一个内圆中的小圆
+ function firstInnerCircleSmall(arg,ctx){
+     ctx.beginPath();
+     ctx.lineWidth=0;
+     var nc=arg.pVal/1.3;
+     var yb=(arg.pVal/2)/7;
+     var x=0;
+     var y=-yb*6;
+     //绘制圆形
+     ctx.arc(x,y,yb,0,2*Math.PI);
+     //边框样式
+     ctx.strokeStyle='#ffffff';
+     //填充样式
+     ctx.fillStyle='#000000';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //最后一个内圆
+ function lastInnerCircle(arg,ctx){
+     ctx.beginPath();
+     ctx.lineWidth=0;
+     var nc=arg.pVal/1.3;
+     var yb=nc/2;
+     var x=0;
+     var y=yb;
+     //绘制圆形
+     ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2);
+     //边框样式
+     ctx.strokeStyle='#000000';
+     //填充样式
+     ctx.fillStyle='#000000';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //最后一个内圆中的小圆
+ function lastInnerCircleSmall(arg,ctx){
+     ctx.beginPath();
+     ctx.lineWidth=0;
+     var nc=arg.pVal/1.3;
+     var yb=(arg.pVal/2)/7;
+     var x=0;
+     var y=yb*6;
+     //绘制圆形
+     ctx.arc(x,y,yb,0,2*Math.PI);
+     //边框样式
+     ctx.strokeStyle='#000000';
+     //填充样式
+     ctx.fillStyle='#ffffff';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+ };
+ //八个方位
+ function eightOrientation(canArg,ctx){
+     //卦线段间距
+     var gvx=5,gvy=15;
+     //方位线的长度
+     var r = canArg.pVal/2+canArg.maxR/2;
+     //线条个数
+     var len = canArg.lineLength;
+     //中心点 x 轴
+     var cx = canArg.orangeX;
+     //中心点 y 轴
+     var cy = canArg.orangeY;
+     // 旋转角度
+     var ang = Math.PI*2/len;
+     // 保存状态
+     ctx.save();
+     //填充颜色
+     ctx.fillStyle='#ffffff';
+     //填充绿色
+     ctx.strokeStyle='#000000';
+     //设置线宽
+     ctx.lineWidth=5;
+     //ctx.clearRect(cx,cy,canArg.width,canArg.height);
+     val+=Math.PI/360;
+     ctx.rotate(-val);
+     ctx.beginPath();
+     for(var i=0;i<len;i++){
+         //旋转
+         ctx.rotate(ang);
+         //八轴线 据中心 r 的距离画点
+         //ctx.moveTo(r,-r);
+         //八轴线 距离中心 r 距离处连线
+         //ctx.lineTo(-r,r);
+         //console.log(r);
+        if(i%3>0) {
+            //第一层线
+            ctx.moveTo(r, r);
+            ctx.lineTo(r - 45, r + 45);
+            ctx.moveTo(r, r);
+            ctx.lineTo(r + 45, r - 45);
+            //第二层线
+            ctx.moveTo(r-gvy-gvx,r-gvy+gvx);
+            ctx.lineTo(r-gvy-40-gvx,r-gvy+40+gvx);
+            ctx.moveTo(r-gvy+gvx, r-gvy-gvx);
+            ctx.lineTo(r-gvy + 40+gvx, r-gvy - 40-gvx);
+        }else{
+            //第一层线
+            ctx.moveTo(r-gvx, r+gvx);
+            ctx.lineTo(r - 40-gvx, r + 40+gvx);
+            ctx.moveTo(r+gvx, r-gvx);
+            ctx.lineTo(r + 40+gvx, r - 40-gvx);
+            //第二层线
+            ctx.moveTo(r-gvy,r-gvy);
+            ctx.lineTo(r-gvy-45,r-gvy+45);
+            ctx.moveTo(r-gvy, r-gvy);
+            ctx.lineTo(r-gvy + 45, r-gvy - 45);
+        }
+        if(i%2>0){
+            //第三层线
+            ctx.moveTo(r-gvy*2,r-gvy*2);
+            ctx.lineTo(r-gvy*2-45,r-gvy*2+45);
+            ctx.moveTo(r-gvy*2, r-gvy*2);
+            ctx.lineTo(r-gvy*2 + 45, r-gvy*2 - 45);
+        }else{
+            //第三层线
+            ctx.moveTo(r-gvy*2-gvx,r-gvy*2+gvx);
+            ctx.lineTo(r-gvy*2-40-gvx,r-gvy*2+40+gvx);
+            ctx.moveTo(r-gvy*2+gvx, r-gvy*2-gvx);
+            ctx.lineTo(r-gvy*2 + 40+gvx, r-gvy*2 - 40-gvx);
+        }
+
+         // ctx.moveTo(155,155);
+         // ctx.lineTo(110,200);
+         //
+         // ctx.moveTo(145,145);
+         // ctx.lineTo(100,190);
+         //
+         // ctx.moveTo(135,135);
+         // ctx.lineTo(90,180);
+         //
+         // ctx.moveTo(155,155);
+         // ctx.lineTo(200,110);
+         //
+         // ctx.moveTo(145,145);
+         // ctx.lineTo(190,100);
+         //
+         // ctx.moveTo(135,135);
+         // ctx.lineTo(180,90);
+
+     };
+     ctx.closePath();
+     ctx.stroke();
+     ctx.fill();
+     //返回原始状态
+     ctx.restore();
+ };
+
+ window.onresize=function(){
+   canvas.setAttribute("width",document.documentElement.clientWidth+"px");
+   canvas.setAttribute("height",document.documentElement.clientHeight+"px");
+   draw();
+ }
+ window.onload=function(){
+   canvas.setAttribute("width",document.documentElement.clientWidth+"px");
+   canvas.setAttribute("height",document.documentElement.clientHeight+"px");
+   draw();
+ }
+ window.addEventListener("click",function(){
+   //draw();
+ });
+</script>
+</body>
+</html>
+<script type="text/javascript">
+    //八个方位
+    // function eightOrientation(arg,ctx){
+    //     //坐标中心点
+    //     var ox = arg.orangeX;
+    //     var oy = arg.orangeY;
+    //     var maxR=arg.maxR;
+    //     var len=arg.lineLength;
+    //     //角度
+    //     var angle = Math.PI*2/8;
+    //     ctx.beginPath();
+    //     //ctx.translate(arg.width/2,arg.height/2);
+    //     ctx.strokeStyle="#000000";
+    //     for(var i=0;i<len;i++){
+    //         var lx=ox+ox*Math.cos(angle*i);
+    //         var ly=oy+oy*Math.sin(angle*i);
+    //         ctx.moveTo(ox,oy);
+    //         ctx.lineTo(lx,ly);
+    //     }
+    //     ctx.closePath();
+    //     ctx.stroke();
+    //     ctx.restore();
+    //     //ctx.draw();
+    // };
+</script>

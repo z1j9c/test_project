@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>画布测试</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        canvas{
+            display: block;
+            margin: 10px auto;
+        }
+    </style>
+    <script type="text/javascript">
+        /**
+         * 60
+         * 启动 动画封装
+         */
+        window.requestAnimFrame=(function(){
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function (callback,element) {
+                    window.setTimeout(callback,1000/60);
+                }
+        })();
+        /*
+         * 停止 动画封装
+         */
+        window.cancelAnimFrame=(function(){
+            return window.cancelAnimationFrame ||
+                window.webkitCancelAnimationFrame ||
+                window.mozCancelAnimationFrame||
+                window.oCancelAnimationFrame ||
+                window.msCancelAnimationFrame ||
+                function (callback,element){
+                    window.clearTimeout(callback);
+                }
+        })();
+
+        // var rotcc=0;
+        // animate();
+        // function animate(){
+        //     rotcc++;
+        //     console.log(rotcc);
+        //     if(rotcc>1000){
+        //       window.cancelAnimFrame(animate);
+        //     }else {
+        //       window.requestAnimFrame(animate);
+        //     }
+        // }
+
+    </script>
+</head>
+<body>
+ <canvas id="canvas_one"></canvas>
+ <script type="text/javascript">
+   var canvas_one =document.getElementById("canvas_one");
+   canvas_one.style.setProperty("border","1px solid #000000");
+   //
+   var ctx = canvas_one.getContext("2d");
+   /*
+    *设置区域的颜色
+    */
+   ctx.fillStyle = "#0000ff";
+   /*
+    * x轴距离
+    * y轴距离
+    * 区域的 width
+    * 区域的 height
+    */
+   ctx.fillRect(0,0,400,500);
+ </script>
+ <canvas id="canvas_two"></canvas>
+ <script type="text/javascript">
+   var canvas2 = document.getElementById("canvas_two");
+   canvas2.style.setProperty("border","1px solid #000000");
+   var ctx2 = canvas2.getContext("2d");
+   //定义从上往下渐变
+   var gradient2 = ctx2.createLinearGradient(0,0,0,150);
+   //从黑色变为白色
+   gradient2.addColorStop(0,"#000");
+   gradient2.addColorStop(1,"#fff");
+   ctx2.fillStyle=gradient2;
+   ctx2.fillRect(0,0,350,300);
+ </script>
+ <canvas id="canvas3"></canvas>
+ <script type="text/javascript">
+   var canvas3 = document.getElementById("canvas3");
+   canvas3.style.setProperty("border","1px solid #000000");
+   var ctx3 = canvas3.getContext("2d");
+   //定义从左往右渐变
+   var gradient3 = ctx3.createLinearGradient(0,0,175,0);
+   //从黑变为白色的
+   gradient3.addColorStop(0,"#000");
+   gradient3.addColorStop(1,"#fff");
+   ctx3.fillStyle=gradient3;
+   ctx3.fillRect(0,0,350,300);
+ </script>
+ <canvas id="canvas4"></canvas>
+ <script type="text/javascript">
+   var canvas4 = document.getElementById("canvas4");
+   canvas4.style.setProperty("border","1px solid #000000");
+   var ctx4 = canvas4.getContext("2d");
+   var gradient4 = ctx4.createLinearGradient(0,0,175,0);
+   //从 黑 => 红 => 白
+   gradient4.addColorStop(0,"#000000");
+   gradient4.addColorStop(0.5,"#ff0000");
+   gradient4.addColorStop(1,"#ffffff");
+   ctx4.fillStyle=gradient4;
+   ctx4.fillRect(0,0,350,300);
+ </script>
+ <div id="draw1" style="text-align: center;">
+     <img src="../image/can_t.ico" id="imgSrc5">
+     <canvas id="canvas5"></canvas>
+     <button val="repeat">图片全铺满</button>
+     <button val="repeat-y">图片竖向铺满</button>
+     <button val="repeat-x">图片横向铺满</button>
+     <button val="no-repeat">图片不铺满</button>
+     <button val="no">清空图片</button>
+ </div>
+ <script type="text/javascript">
+   var divo = document.getElementById("draw1");
+   var buttons = divo.getElementsByTagName("button");
+   var canvas5 = document.getElementById("canvas5");
+   canvas5.style.setProperty("border","1px solid #000000");
+   canvas5.setAttribute("width","500px");
+   canvas5.setAttribute("height","450px");
+   var ctx5 = canvas5.getContext("2d");
+   for(var ii=0;ii<buttons.length;ii++){
+    buttons[ii].onclick = function(){
+      var val = this.getAttribute("val");
+      if(val&&val.length!=0){
+       if(val!="no") {
+           ctx5.clearRect(0, 0, canvas5.width, canvas5.height);
+           var imgSrc = document.getElementById("imgSrc5");
+           var pat = ctx5.createPattern(imgSrc, val);
+           ctx5.rect(0, 0, 500, 450);
+           ctx5.fillStyle = pat;
+           ctx5.fill();
+       }else{
+           ctx5.clearRect(0, 0, canvas5.width, canvas5.height);
+       }
+      }
+    }
+   }
+ </script>
+ <canvas id="canvas6"></canvas>
+ <script type="text/javascript">
+   var canvas6 = document.getElementById("canvas6");
+   canvas6.style.border="1px solid #000000";
+   var ctx6 =canvas6.getContext("2d");
+   //设置边框颜色
+   ctx6.strokeStyle="#0000ff";
+   /*
+    * 边框坐标 x 轴
+    * 边框坐标 y 轴
+    * 边框宽 width
+    * 边框高 height
+    */
+   ctx6.strokeRect(10,10,150,100);
+ </script>
+ <canvas id="canvas7"></canvas>
+ <script type="text/javascript">
+  var canvas7 = document.getElementById("canvas7");
+  canvas7.style.border="1px solid #000000";
+  canvas7.setAttribute("width","350px");
+  canvas7.setAttribute("height","300px");
+  //绘制2D的图案
+  var ctx7 = canvas7.getContext("2d");
+  var gradient7 = ctx7.createLinearGradient(0,0,175,0);
+  gradient7.addColorStop("0","#8b008b");
+  gradient7.addColorStop("0.5","#0000ff");
+  gradient7.addColorStop("1","#ff0000");
+  //用渐变颜色填充
+  ctx7.strokeStyle=gradient7;
+  ctx7.lineWidth = 6;
+  ctx7.strokeRect(10,10,200,150);
+ </script>
+ <canvas id="canvas8"></canvas>
+ <script type="text/javascript">
+   var canvas8 = document.getElementById("canvas8");
+   canvas8.style.border = "1px solid #000000";
+   canvas8.setAttribute("width","300px");
+   canvas8.setAttribute("height","250px");
+   var ctx8 = canvas8.getContext("2d");
+   ctx8.font="30px Verdana";
+   // 创建线性渐变
+   var gradient8 = ctx8.createLinearGradient(0,0,canvas8.width,0);
+   gradient8.addColorStop("0","#8b008b");
+   gradient8.addColorStop("0.5","#0000ff");
+   gradient8.addColorStop("1","#ff0000");
+   //用渐变色填充
+   ctx8.strokeStyle=gradient8;
+   ctx8.strokeText("这是一段语句",20,30);
+ </script>
+ <canvas id="canvas9"></canvas>
+ <script type="text/javascript">
+   var canvas9 = document.getElementById("canvas9");
+   canvas9.style.border="1px solid #000000";
+   canvas9.setAttribute("width","300px");
+   canvas9.setAttribute("height","250px");
+   var ctx9 = canvas9.getContext("2d");
+   //阴影的模糊级别
+   ctx9.shadowBlur=30;
+   //阴影的颜色
+   ctx9.shadowColor="#000000";
+   ctx9.fillStyle="#0000ff";
+   ctx9.fillRect(30,30,200,200);
+ </script>
+ <canvas id="canvas10"></canvas>
+ <script type="text/javascript">
+   var canvas10 = document.getElementById("canvas10");
+   canvas10.style.border = "1px solid #000000";
+   canvas10.setAttribute("width","300px");
+   canvas10.setAttribute("height","250px");
+   var ctx10 = canvas10.getContext("2d");
+   ctx10.shadowBlur=20;
+   ctx10.shadowOffsetX = 30;
+   ctx10,shadowOffsetY= 20
+   ctx10.shadowColor="#000000";
+   ctx10.fillStyle="#ff0000";
+   ctx10.fillRect(30,30,200,200);
+ </script>
+ <canvas id="canvas11"></canvas>
+ <script type="text/javascript">
+   var canvas11 = document.getElementById("canvas11");
+   canvas11.style.border="1px solid #000000";
+   canvas11.setAttribute("width","300px");
+   canvas11.setAttribute("height","250px");
+   var ctx11 = canvas11.getContext("2d");
+   /*渐变的开始圆的 x 坐标
+    *渐变的开始圆的 y 坐标
+    *开始圆的半径
+    *渐变的结束圆的 x 坐标
+    *渐变的结束圆的 y 坐标
+    *结束圆的半径
+    */
+   var gradient11 = ctx11.createRadialGradient((canvas11.width-10)/2,(canvas11.height-10)/2,5,90,60,canvas11.height-10);
+   gradient11.addColorStop(0,"#ff0000");
+   gradient11.addColorStop(1,"#ffffff");
+   ctx11.fillStyle=gradient11;
+   ctx11.fillRect(10,10,canvas11.width-10,canvas11.height-10);
+ </script>
+ <canvas id="canvas12"></canvas>
+ <script type="text/javascript">
+   var canvas12 = document.getElementById("canvas12");
+   canvas12.style.border="1px solid #000000";
+   canvas12.setAttribute("width","300px");
+   canvas12.setAttribute("height","250px");
+   var ctx12 = canvas12.getContext("2d");
+   ctx12.beginPath();
+   ctx12.lineWidth=10;
+   ctx12.lineCap="round"; //butt|round|square
+   ctx12.moveTo(10,10);
+   ctx12.lineTo(canvas12.width-10,canvas12.height-10);
+   ctx12.stroke();
+ </script>
+ <canvas id="canvas13"></canvas>
+ <script type="text/javascript">
+   var canvas13 = document.getElementById("canvas13");
+   canvas13.style.border="1px solid #000000";
+   canvas13.setAttribute("width","300px");
+   canvas13.setAttribute("height","250px");
+   var ctx13 = canvas13.getContext("2d");
+   ctx13.beginPath();
+   ctx13.lineWidth=10;
+   ctx13.lineJoin="miter"; // bevel|round|miter
+   ctx13.miterLimit=100;
+   ctx13.moveTo(10,10);
+   ctx13.lineTo(canvas13.width/2+100,canvas13.height/2-10);
+   ctx13.lineTo(10,canvas13.height-10);
+   ctx13.stroke();
+ </script>
+ <canvas id="canvas14"></canvas>
+ <script type="text/javascript">
+   var canvas14 = document.getElementById("canvas14");
+   canvas14.style.border="1px solid #000000";
+   canvas14.setAttribute("width","300px");
+   canvas14.setAttribute("height","250px");
+   var ctx14 = canvas14.getContext("2d");
+   var rotvv = 0;
+   RotObject();
+   function RotObject() {
+       rotvv++;
+       ctx14.clearRect(10,10,30,20);
+       ctx14.rotate(rotvv);
+       ctx14.fillRect(10,10,30,20);
+       if(rotvv<1000) {
+           window.requestAnimFrame(RotObject);
+       }else{
+           window.cancelAnimFrame(RotObject);
+       }
+   }
+ </script>
+ <canvas id="canvas15" width="500px" height="500px"></canvas>
+  <script type="text/javascript">
+      var canvas15=document.getElementById("canvas15");
+      var ctx15=canvas15.getContext('2d');
+      //3.把旋转的矩形平移进画布
+      ctx15.translate(300,300);
+      var timer15=setInterval(function(){
+          //4.清除的点需要注意
+          ctx15.clearRect(-151,-101,canvas15.width,canvas15.height);
+          //1.定义一个旋转的方法,确定每次时间间隔中要旋转多少弧度
+          ctx15.rotate(0.01*Math.PI);
+          //2.绘制一个矩形，因为需求要求矩形以中心为轴进行旋转，但是canvas中rotate只能以画布左上角为轴，进行旋转
+          //因此，只要使矩形的中心和画布的左上角重合就可以了(起点的横纵坐标为矩形宽高的一半)
+          ctx15.strokeRect(-150,-100,300,200);
+      },5);
+  </script>
+</body>
+</html>
+
