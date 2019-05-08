@@ -52,72 +52,53 @@
 <canvas id="canvas"></canvas>
 <script type="text/javascript">
  var canvas = document.getElementById("canvas");
- canvas.style.border="1px solid #000000";
+ //canvas.style.border="1px solid #000000";
  var ctx = canvas.getContext("2d");
- var val = 0;
+ var lineVal = 0,circleVal=0,canArg=undefined,arg=undefined,slv=720;
  function draw(){
-   var canArg={
+   canArg={
        width:canvas.width,
        height:canvas.height,
        orangeX:canvas.width/2,
        orangeY:canvas.height/2,
-       pVal:(canvas.width/2+canvas.height/2)/3.1415926,
-       maxR:((canvas.width/2+canvas.height/2)/3.1415926)/2,
+       pVal:(canvas.width/2+canvas.height/2)/Math.PI,
+       maxR:((canvas.width/2+canvas.height/2)/Math.PI)/2,
        lineLength:8
    };
-   ctx.clearRect(0,0,canArg.width,canArg.height);
+   arg=canArg;
    ctx.translate(canArg.orangeX,canArg.orangeY);
-   //外大圆
-   //outsideCircle(canArg,ctx);
+
    //八个方位的线
    eightOrientation(canArg,ctx);
-   //外大圆里面的内嵌圆
-   outsideCircleInsideCircle(canArg,ctx);
-   //第一个内圆
-   firstInnerCircle(canArg,ctx);
 
+   //上下半圆
+   outsideCircle(canArg,ctx);
+   //外大圆里面的背景圆
+   outsideBackCircle(canArg, ctx);
+   //第一个内圆
+   firstInnerCircle(canArg, ctx);
    //第一个内圆中的小圆
    firstInnerCircleSmall(canArg,ctx);
-
    //最后一个内圆
    lastInnerCircle(canArg,ctx);
+
    //最后一个内圆中的小圆
    lastInnerCircleSmall(canArg,ctx);
  }
 
- //外大圆
- function outsideCircle(arg,ctx){
-     //圆形中心坐标点
-     //ctx.translate(can.width/2,can.height/2);
-     ctx.beginPath();
-     ctx.lineWidth=1;
-     var yb=arg.pVal;
-     var x=arg.width/2;
-     var y=arg.height/2;
-     //绘制圆形
-     ctx.arc(x,y,yb,0,2*Math.PI);
-     //边框样式
-     ctx.strokeStyle='#ff0000';
-     //填充样式
-     ctx.fillStyle='#ffffff';
-     ctx.fill();
-     ctx.stroke();
-     ctx.closePath();
- };
- //外大圆里面的内嵌圆
- function outsideCircleInsideCircle(arg,ctx){
+ //上下半圆
+ function outsideCircle(){
      ctx.save();
      ctx.beginPath();
-     ctx.lineWidth=0;
+     ctx.lineWidth=1;
      var yb=arg.pVal/1.3;
      var x=0;
      var y=0;
-     //ctx.clearRect(x,y,arg.width,arg.height);
-     val+=Math.PI/360;
-     ctx.rotate(val);
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
      //绘制圆形
-     //ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2,true);
-     ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2,true);
+     ctx.arc(x,y,yb,Math.PI*(3/2),Math.PI/2,false);
      //边框样式
      ctx.strokeStyle='#000000';
      //填充样式
@@ -125,15 +106,87 @@
      ctx.fill();
      ctx.stroke();
      ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     /*-------------------------------------------------------------*/
+     ctx.save();
+     ctx.beginPath();
+     ctx.lineWidth=1;
+     var yb=arg.pVal/1.3;
+     var x=0;
+     var y=0;
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
+     //绘制圆形
+     ctx.arc(x,y,yb,Math.PI/2,Math.PI*(3/2),false);
+     //边框样式
+     ctx.strokeStyle='#000000';
+     //填充样式
+     ctx.fillStyle='#ffffff';
+     ctx.fill();
+     ctx.stroke();
+     ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     window.startAnimation(outsideCircle);
+ };
+ //外大圆里面的背景圆
+ function outsideBackCircle() {
+         ctx.save();
+         ctx.beginPath();
+         ctx.lineWidth = 0;
+         var yb = arg.pVal / 1.3;
+         var x = 0;
+         var y = 0;
+         ctx.clearRect(0,0,arg.width,arg.height);
+         circleVal += Math.PI / slv;
+         ctx.rotate(-circleVal);
+         //绘制圆形
+         ctx.arc(x, y, yb, Math.PI * (3 / 2), Math.PI / 2, true);
+         //边框样式
+         ctx.strokeStyle = '#000000';
+         //填充样式
+         ctx.fillStyle = '#000000';
+         ctx.fill();
+         ctx.stroke();
+         ctx.closePath();
+         //返回原始状态
+         ctx.restore();
+         /*---------------------------------------------------------*/
+         ctx.save();
+         ctx.beginPath();
+         ctx.lineWidth = 0;
+         var yb = arg.pVal / 1.3;
+         var x = 0;
+         var y = 0;
+         ctx.clearRect(0,0,arg.width,arg.height);
+         circleVal += Math.PI / slv;
+         ctx.rotate(-circleVal);
+         ctx.arc(x, y, yb, Math.PI / 2, Math.PI * (3 / 2), true);
+         //边框样式
+         ctx.strokeStyle = '#ffffff';
+         //填充样式
+         ctx.fillStyle = '#ffffff';
+         ctx.fill();
+         ctx.stroke();
+         ctx.closePath();
+         //返回原始状态
+         ctx.restore();
+         window.startAnimation(outsideBackCircle);
  };
  //第一个内圆
- function firstInnerCircle(arg,ctx){
+ function firstInnerCircle(){
+     ctx.save();
      ctx.beginPath();
      ctx.lineWidth=0;
      var nc=arg.pVal/1.3;
      var yb=nc/2;
      var x=0;
      var y=-nc+yb;
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
      //绘制圆形
      ctx.arc(x,y,yb,Math.PI/2,Math.PI*3/2);
      //边框样式
@@ -143,15 +196,22 @@
      ctx.fill();
      ctx.stroke();
      ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     window.startAnimation(firstInnerCircle);
  };
  //第一个内圆中的小圆
- function firstInnerCircleSmall(arg,ctx){
+ function firstInnerCircleSmall(){
+     ctx.save();
      ctx.beginPath();
      ctx.lineWidth=0;
      var nc=arg.pVal/1.3;
      var yb=(arg.pVal/2)/7;
      var x=0;
      var y=-yb*6;
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
      //绘制圆形
      ctx.arc(x,y,yb,0,2*Math.PI);
      //边框样式
@@ -161,15 +221,22 @@
      ctx.fill();
      ctx.stroke();
      ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     window.startAnimation(firstInnerCircleSmall);
  };
  //最后一个内圆
- function lastInnerCircle(arg,ctx){
+ function lastInnerCircle(){
+     ctx.save();
      ctx.beginPath();
      ctx.lineWidth=0;
      var nc=arg.pVal/1.3;
      var yb=nc/2;
      var x=0;
      var y=yb;
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
      //绘制圆形
      ctx.arc(x,y,yb,Math.PI*3/2,Math.PI/2);
      //边框样式
@@ -179,15 +246,22 @@
      ctx.fill();
      ctx.stroke();
      ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     window.startAnimation(lastInnerCircle);
  };
  //最后一个内圆中的小圆
- function lastInnerCircleSmall(arg,ctx){
+ function lastInnerCircleSmall(){
+     ctx.save();
      ctx.beginPath();
      ctx.lineWidth=0;
      var nc=arg.pVal/1.3;
      var yb=(arg.pVal/2)/7;
      var x=0;
      var y=yb*6;
+     ctx.clearRect(0,0,arg.width,arg.height);
+     circleVal += Math.PI / slv;
+     ctx.rotate(-circleVal);
      //绘制圆形
      ctx.arc(x,y,yb,0,2*Math.PI);
      //边框样式
@@ -197,9 +271,12 @@
      ctx.fill();
      ctx.stroke();
      ctx.closePath();
+     //返回原始状态
+     ctx.restore();
+     window.startAnimation(lastInnerCircleSmall);
  };
  //八个方位
- function eightOrientation(canArg,ctx){
+ function eightOrientation(){
      //卦线段间距
      var gvx=5,gvy=15;
      //方位线的长度
@@ -212,19 +289,20 @@
      var cy = canArg.orangeY;
      // 旋转角度
      var ang = Math.PI*2/len;
-     // 保存状态
-     ctx.save();
      //填充颜色
      ctx.fillStyle='#ffffff';
      //填充绿色
      ctx.strokeStyle='#000000';
      //设置线宽
      ctx.lineWidth=5;
-     //ctx.clearRect(cx,cy,canArg.width,canArg.height);
-     val+=Math.PI/360;
-     ctx.rotate(-val);
+     // 保存状态
+     ctx.save();
+     ctx.clearRect(0,0,canArg.width,canArg.height);
+     lineVal+=Math.PI/360;
+     ctx.rotate(lineVal);
      ctx.beginPath();
      for(var i=0;i<len;i++){
+         ctx.clearRect(0,0,canArg.width,canArg.height);
          //旋转
          ctx.rotate(ang);
          //八轴线 据中心 r 的距离画点
@@ -268,36 +346,20 @@
             ctx.moveTo(r-gvy*2+gvx, r-gvy*2-gvx);
             ctx.lineTo(r-gvy*2 + 40+gvx, r-gvy*2 - 40-gvx);
         }
-
-         // ctx.moveTo(155,155);
-         // ctx.lineTo(110,200);
-         //
-         // ctx.moveTo(145,145);
-         // ctx.lineTo(100,190);
-         //
-         // ctx.moveTo(135,135);
-         // ctx.lineTo(90,180);
-         //
-         // ctx.moveTo(155,155);
-         // ctx.lineTo(200,110);
-         //
-         // ctx.moveTo(145,145);
-         // ctx.lineTo(190,100);
-         //
-         // ctx.moveTo(135,135);
-         // ctx.lineTo(180,90);
-
      };
      ctx.closePath();
      ctx.stroke();
      ctx.fill();
      //返回原始状态
      ctx.restore();
+
+     window.startAnimation(eightOrientation);
  };
 
  window.onresize=function(){
    canvas.setAttribute("width",document.documentElement.clientWidth+"px");
    canvas.setAttribute("height",document.documentElement.clientHeight+"px");
+   window.location.reload();
    draw();
  }
  window.onload=function(){
@@ -305,9 +367,7 @@
    canvas.setAttribute("height",document.documentElement.clientHeight+"px");
    draw();
  }
- window.addEventListener("click",function(){
-   //draw();
- });
+
 </script>
 </body>
 </html>
