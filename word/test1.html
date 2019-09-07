@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{margin:0;padding:0;}
+			.warp{
+				width:auto;
+				height:40px;
+				text-align: left;
+				color: #000000;
+				font-size: 30px;
+				margin:10px 0 0 0;
+			}
+			.warp::after{
+				content: "";
+				width:5px;
+				height:40px;
+				margin:10px 0 0 10px;
+				background-color:#000000;
+				display: inline-block;
+				opacity: 1;
+				visibility: visible;
+			     vertical-align: bottom;
+			}
+			.active{
+				width:auto;
+				height:40px;
+				text-align: left;
+				color: #000000;
+				font-size: 30px;
+				margin:10px 0 0 0;
+				font-family: "microsoft yahei";
+			}
+			.active:after{
+				content: "";
+				width:5px;
+				height:40px;
+				margin:10px 0 0 10px;
+				background-color:#000000;
+				display: inline-block;
+				opacity: 0;
+				visibility: hidden;
+			     vertical-align: bottom;
+			}
+		</style>
+	</head>
+	<body>
+		   <div class="warp"></div>
+		<script type="text/javascript">
+			var wordAction = (function () {
+				function WordAction (opt) {
+					this.ele = opt.el || document.body;
+					this.data = opt.data || [];
+					this.wordSeept = 1500;
+				};
+				WordAction.prototype = {
+					wordFontAction : function () {
+						var self = this, 
+						      word = (self.data[0]).toString(),
+						      index = 0, 
+						      wordFlag = true;
+						this.timerController(wordFlag, function () {
+							if (word.length > 0) {
+								if (index >= word.length) {
+									index = 0;
+									self.ele.innerHTML = "";
+								}else{
+									if(word[index]){
+									    self.ele.innerHTML +=(word[index].indexOf("。")!= -1) ? word[index]+"</br>" : word[index];
+									    index++;
+									}
+								}
+							} else {
+								wordFlag = false;
+							}
+						}, 1500);
+					},
+					cursorAction : function () {
+						var falg = true, self = this;
+						this.timerController(true, function () {
+							if (falg) {
+								self.ele.className = "active";
+								falg = false;
+							} else {
+								self.ele.className = "warp";
+								falg = true;
+							}
+						}, 1000);
+					},
+					readAloudInit : function() {
+						this.Audio = this.createElement("audio");
+						this.Soure = this.createElement("source");
+						this.Soure.setAttribute("src", "");
+						this.Soure.setAttribute("type", "audio/mpeg");
+						this.Embed = this.createElement("embed");
+						this.Embed.setAttribute("src", "");
+						this.Audio.appendChild(Soure);
+						this.Audio.appendChild(Embed);
+						document.body.insertBefore(this.Audio, document.body.lastChild);
+					},
+					changeRandom : function () {
+						var self = this;
+						this.timerController(true, function(){
+							self.wordSeept = self.getRandom(1500, 600);
+						},3000);
+					},
+					getRandom : function (min, max) {
+						return Math.floor(Math.random()*(max - min)+min);
+					},
+					readAloudPlayer : function(readText) {
+						var readValue = encodeURI(readText);
+//						var audioUrl = "http://tts.baidu.com/text2audio?lan=zh&token=24.188d0ca575b9bfac65e408d027c7ab3d.2592000.1568726179.282335-15221586&ie=UTF-8&spd=3&text="+readValue";
+//						this.Soure.src = audioUrl;
+//						this.Embed.src = audioUrl;
+						this.Audio.play();
+					},
+					timerController : function (flag, callback, timer) {
+						var self = this, timerOut = null;
+						clearTimeout(timerOut);
+						timerOut = setTimeout(function () {
+							if (!flag) {
+								clearTimeout(timerOut);
+								return false;
+							}
+							if(typeof(callback) === "function") {
+								callback();
+							}
+							self.timerController(flag, callback, timer);
+						},timer);
+					},
+					createElement : function (tagName) {
+						return document.createElement((tagName) ? tagName : "div");
+					}
+				};
+				
+				return WordAction;
+			})();
+			
+			var wa = new wordAction({
+				el : document.getElementsByClassName("warp")[0],
+				data : [
+				      "天行健，君子以自强不息；地势坤，君子以厚德载物。穷则变，变则通，通则久。物极必反，盛极必衰。善不积不足以成名，恶不积不足以灭身。形而上者谓之道；形而下者谓之器。君子上交不谄，下交不渎。物以类聚，人以群分。二人同心，其利断金。仁者见之谓之仁，知者见之谓之知。取法乎上，仅得其中；取法乎中，仅得其下；取法乎下，无所得矣。一阴一阳之谓道。道生一，一生二，二生三，三生万物。是故，易有太极，是生两仪，两仪生四象，四象生八卦，八卦定吉凶，吉凶生大业。"
+				]
+			});
+			
+			wa.cursorAction();
+			
+			wa.wordFontAction();
+			
+		</script>
+	</body>
+</html>
