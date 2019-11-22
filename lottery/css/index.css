@@ -1,0 +1,68 @@
+html,body{
+    font-family: "Microsoft YaHei UI";
+}
+*{
+    margin:0;padding:0;
+}
+
+.container{
+    width:500px;height:500px;
+    margin-left:-250px;
+    margin-top:-250px;
+    position: absolute;
+    left:50%;top:50%;
+    /*border:1px solid red;*/
+    z-index: 1;
+}
+
+.con_warp{
+    position: relative;
+    z-index: 2;
+    clear: both;
+}
+
+.con_warp .item_box{
+    list-style-type: none;
+    width:123px;height:123px;
+    border:1px solid #ffffff;
+    text-align: center;
+    line-height: 124px;
+    float: left;
+    font-size: 18px;
+    background-color: #FFC837;
+}
+
+.con_warp .item_border_left_bottom{
+    border-left:1px solid #ffffff;
+    border-bottom:1px solid #ffffff;
+    background-color:#ffffff;
+}
+.con_warp .item_border_right_bottom{
+    border-right:1px solid #ffffff;
+    border-bottom:1px solid #ffffff;
+    background-color:#ffffff;
+}
+.con_warp .item_border_left_top{
+    border-left:1px solid #ffffff;
+    border-top:1px solid #ffffff;
+    background-color:#ffffff;
+}
+.con_warp .item_border_right_top{
+    border-top:1px solid #ffffff;
+    border-right:1px solid #ffffff;
+    background-color:#ffffff;
+}
+
+
+.container .center_button{
+    position:absolute;
+    width:248px;height:248px;
+    z-index: 3;
+    top:126px;left:126px;
+    background-color: #FF8008;
+    text-align: center;
+    line-height: 250px;
+    font-size: 30px;
+    clear: both;
+    cursor: pointer;
+}
