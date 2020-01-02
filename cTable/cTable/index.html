@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS分页</title>
+    <script type="text/javascript" src="baiduTemplate.js"></script>
+    <style type="text/css">
+        *{margin: 0;padding: 0;}
+        tr>td,th{text-align: center;}
+        td>img{
+            width: 150px;height:auto;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+
+<script id="temp1" type="text/html">
+ <div>
+   <table>
+     <thead>
+      <tr>
+         <th>序号</th>
+         <th>标题</th>
+         <th>图片</th>
+         <th>描述</th>
+         <th>日期</th>
+      </tr>
+     </thead>
+     <tbody>
+     <%
+     var pageSize = 5,
+     pageCount = Math.ceil((data.length - 1)/pageSize),
+     pageValue = Math.ceil((data.length - 1)/pageCount),
+     btnIndex = 0;
+     %>
+     <%for(var i = pageValue*(pageNum-1);i < (pageValue*(pageNum-1))+pageSize; i++){%>
+      <%if(data[i]){%>
+       <tr>
+           <td width="8%"><%=i+1%></td>
+           <td width="15%"><%=data[i].title%></td>
+           <td width="35%"><img src="jsonPackage/<%=data[i].image%>" alt="<%=data[i].title%>"></td>
+           <td><%=data[i].description%></td>
+           <td width="20%"><%=formatDate(new Date(parseInt(data[i].timer)))%></td>
+       </tr>
+      <%}else{%>
+        break;
+      <%}%>
+     <%}%>
+     </tbody>
+     <tfoot>
+        <tr>
+           <td colspan="4">
+            <div>
+                <%if(pageNum > 1){%>
+                <p style="display:inline-block;border:1px solid #000;color:#000;margin:0px 5px;padding:8px;cursor: pointer;" onclick="btnTopPage('<%=pageNum%>')">上一页</p>
+                <%}%>
+               <%for(var index = 0;index < pageCount;index++){%>
+                <%btnIndex = index+1;%>
+                <%if(btnIndex != pageNum){%>
+                  <p style="display:inline-block;border:1px solid #000;color:#000;margin:0px 5px;padding:8px;cursor: pointer;" onclick="btnClick('<%=btnIndex%>')"><%=btnIndex%></p>
+                <%}else{%>
+                  <p style="display:inline-block;border:1px solid red;color:red;margin:0px 5px;padding:8px;cursor: pointer;" onclick="btnClick('<%=btnIndex%>')"><%=btnIndex%></p>
+                <%}%>
+               <%}%>
+                <%if(pageNum < pageCount){%>
+                <p style="display:inline-block;border:1px solid #000;color:#000;margin:0px 5px;padding:8px;cursor: pointer;" onclick="btnBottomPage('<%=pageNum%>')">下一页</p>
+                <%}%>
+            </div>
+           </td>
+        </tr>
+     </tfoot>
+   </table>
+ </div>
+</script>
+<script id="temp2" type="text/x-dot-template"></script>
+
+<script type="text/javascript">
+  var local = window.location.href;//http://localhost:8099/Test/
+  console.log(local);
+  function requestData(params, success, error){
+    var xmlHttp = null;
+    params = {
+      url: params.url || '',
+      data: params.data || {},
+      dataType: params.dataType || 'json',
+      type: params.type || 'get',
+      async: params.async || true
+    };
+    //创建对象
+    if(window.XMLHttpRequest){
+       xmlHttp = new window.XMLHttpRequest();
+    } else {
+       xmlHttp = new window.ActiveXObject("Microsoft.XMLHTTP");
+    }
+    //向服务器发送请求
+    if(params.type == 'get'){
+        var dataUrl = params.url;
+        if(dataUrl){
+           dataUrl = dataUrl+'?';
+           for(var item in params.data){
+               dataUrl = dataUrl+item+'='+params.data[item]+'&';
+           }
+           if(dataUrl.indexOf('&') != -1){
+               dataUrl = dataUrl.substr(0, dataUrl.length - 1);
+           }
+        }
+        xmlHttp.open('GET', dataUrl, params.async);
+        xmlHttp.send();
+    } else {
+        xmlHttp.open('POST', params.url, params.async);
+        xmlHttp.setRequestHeader("Content-type", "x-www-form-urlencoded");
+        xmlHttp.send(eval("("+params.data+")"));
+    }
+    xmlHttp.onreadystatechange = function(){
+       if(xmlHttp.readyState == 4 && xmlHttp.status == 200){
+           if(typeof (success) == 'function'){
+               success(eval("("+xmlHttp.responseText+")"));
+           }
+       }else{
+           if(typeof (error) == 'function'){
+               error({'code': xmlHttp.readyState});
+           }
+       }
+    }
+
+  };
+  function formatDate(now) {
+      var year=now.getFullYear();
+      var month=now.getMonth()+1;
+      var date=now.getDate();
+      var hour=now.getHours();
+      var minute=now.getMinutes();
+      var second=now.getSeconds();
+      return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second;
+  };
+  dataInit(1);
+  function dataInit(index) {
+      requestData({
+          url: 'jsonPackage/test.json',
+          data: {
+              name: '123456',
+              value: 'abcdefg'
+          },
+          dataType: 'json',
+          async: true
+      }, function (res) {
+          res.pageNum = index;
+          var html = baidu.template('temp1', res);
+          document.getElementById("container").innerHTML = html;
+      }, function (err) {
+
+      });
+  }
+  //数字按钮
+  function btnClick(index){
+    dataInit(index);
+  }
+  //上一页
+  function btnTopPage(index){
+    index--;
+    dataInit(index);
+  }
+  //下一页
+  function btnBottomPage(index){
+    index++;
+    dataInit(index);
+  }
+
+</script>
+</body>
+</html>
